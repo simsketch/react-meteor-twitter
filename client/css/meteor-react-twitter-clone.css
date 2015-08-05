@@ -44,3 +44,22 @@
 .user-container .login {
   margin-bottom: 15px;
 }
+
+.followBox {
+  background-color: rgb(240, 247, 254);
+}
+
+.follow-container {
+  margin-top: 30px;
+  margin-left: 30px;
+}
+
+.follow-container .found-user {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.follow-container h5 {
+  color: gray;
+}

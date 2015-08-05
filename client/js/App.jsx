@@ -19,12 +19,9 @@ App = React.createClass({
   },
 
   submitTweet() {
-    if (Meteor.user()) {
-      Tweets.insert({
-        message: this.state.tweetText,
-        user: Meteor.user().username,
-      });
-    }
+    Meteor.call('insertTweet', this.state.tweetText, (err, res) => {
+      (err) && console.log(error);
+    });
     this.setState({tweetText: ""});
   },
 
@@ -36,6 +33,7 @@ App = React.createClass({
     return (
       <div className="row">
         <div className="col-md-4 col-sm-4">
+
           <div className="user-container">
             <div className="panel panel-default userBox">
               <div className="panel-body">
@@ -62,10 +60,13 @@ App = React.createClass({
               </div>
             </div>
           </div>
+
+          { this.data.currentUser ? <FollowUsers /> : ""}
+
         </div>
         <div className="col-md-8 col-sm-8">
           <div className="tweetbox-container">
-            <div className="panel panel-default tweetbox col-md-6">
+            <div className="panel panel-default tweetbox">
               <div className="panel-body">
                 {/* Text box for tweet content */}
                 <textarea

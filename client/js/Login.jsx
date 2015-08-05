@@ -37,7 +37,7 @@ Login = React.createClass({
               id="login-password"
               placeholder="Password"
               type="password"
-              valueLink={this.linkState('password')}/>
+              valueLink={this.linkState('password')} />
           </div>
 
           <button
