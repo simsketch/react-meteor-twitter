@@ -33,6 +33,23 @@
   color: gray;
 }
 
+.user-container .table {
+  margin-top: 10px;
+}
+
+.user-container .table th, .table td {
+   border-top: none;
+}
+
+.user-container .tableHeader {
+  color: gray;
+}
+
+.user-container .tableContent {
+  color: rgb(117, 187, 251);
+  font-size: 150%;
+}
+
 .user-container .fullbutton {
   width: 100%;
 }
@@ -62,4 +79,13 @@
 
 .follow-container h5 {
   color: gray;
+}
+
+.tweetfeed {
+  background-color: rgb(240, 247, 254);
+}
+
+.tweetfeed-container {
+  margin: 30px;
+  margin-left: 10px;
 }

@@ -6,8 +6,9 @@
 
 meteor-platform
 twbs:bootstrap
-react
 accounts-ui
 accounts-password
 
 
+reywood:publish-composite
+react

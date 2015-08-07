@@ -1,34 +1,54 @@
 FollowUsers = React.createClass({
 
-  mixins: [React.addons.LinkedStateMixin],
+  mixins: [ReactMeteorData, React.addons.LinkedStateMixin],
 
   getInitialState() {
     return {
       searchText: "",
       foundUser: null,
-      recommendedUsers: [],
     };
   },
 
-  componentDidMount() {
-    Meteor.call('recommendUsers', (err, res) => {
-      (err) && console.log(error);
-      (res) && this.setState({ recommendedUsers: res});
-    });
+  getMeteorData() {
+    let data = {recommendedUsers: []};
+    if (Meteor.user()) {
+
+      const subHandles = [
+        Meteor.subscribe('users', Meteor.user().username),
+        Meteor.subscribe('followings', Meteor.user().username),
+      ];
+      const subsReady = _.all(subHandles, function (handle) {
+        return handle.ready();
+      });
+
+      if ( subsReady && Meteor.user() ) {
+        let currentFollowings = UserUtils.findFollowings(Meteor.user().username);
+
+        data.recommendedUsers = Meteor.users.find({
+          username: {
+            $nin: currentFollowings
+          }
+        }, {
+          fields: { 'username': 1 },
+          limit: 5
+        }).fetch();
+      }
+    }
+    return data;
   },
 
   findUser(e) {
     e.preventDefault();
 
     Meteor.call('findUser', this.state.searchText, (err, res) => {
-      (err) && alert(error);
+      (err) && alert(err);
       (res) && this.setState({foundUser: res});
     });
   },
 
   followUser(_user) {
-    Meteor.call('followUser', _user, (err, res) => {
-      (err) && console.log(error);
+    Meteor.call('followUser', _user.username, (err, res) => {
+      (err) && console.log(err);
     });
   },
 
@@ -64,9 +84,9 @@ FollowUsers = React.createClass({
             {/* List of people to follow */}
             <div className="recommend-users">
               <h5>Who to follow:</h5>
-              { this.state.recommendedUsers.map( (recUser, idx) => {
+              { this.data.recommendedUsers.map( (recUser) => {
                 return (
-                  <p key={idx}>
+                  <p key={recUser._id}>
                     <button
                       type="button"
                       className="btn btn-default"

@@ -13,9 +13,31 @@ App = React.createClass({
   },
 
   getMeteorData() {
-    return {
-      currentUser: Meteor.user(),
+    let data = {
+      currentUser: null,
+      tweets: null,
+      following: null,
+      followers: null,
     };
+    if (Meteor.user()) {
+
+      const subHandles = [
+        Meteor.subscribe('followings', Meteor.user().username),
+        Meteor.subscribe('followers', Meteor.user().username),
+        Meteor.subscribe('tweets', Meteor.user().username)
+      ];
+      const subsReady = _.all(subHandles, function (handle) {
+        return handle.ready();
+      });
+
+      if (subsReady) {
+        data.currentUser = Meteor.user();
+        data.tweets =  Tweets.find({ user: Meteor.user().username }).count();
+        data.following = Relationships.find({ follower: Meteor.user().username }).count();
+        data.followers = Relationships.find({ following: Meteor.user().username }).count();
+      }
+    }
+    return data;
   },
 
   submitTweet() {
@@ -32,7 +54,7 @@ App = React.createClass({
   render() {
     return (
       <div className="row">
-        <div className="col-md-4 col-sm-4">
+        <div className="col-md-4 col-xs-4">
 
           <div className="user-container">
             <div className="panel panel-default userBox">
@@ -42,7 +64,7 @@ App = React.createClass({
                   //Message for logged in user
                   <div>
                     <p>Hello <strong>{this.data.currentUser.username}</strong>,
-                      welcome to twitterClone</p>
+                      welcome to twitterClone w react</p>
                     <button
                       type="button"
                       className="btn btn-info fullbutton"
@@ -50,6 +72,20 @@ App = React.createClass({
                       onClick={this.logOutUser}>
                       Log out
                     </button>
+
+                    <table className="table">
+                      <tr>
+                        <td className="tableHeader">Tweets</td>
+                        <td className="tableHeader">Following</td>
+                        <td className="tableHeader">Followers</td>
+                      </tr>
+                      <tr>
+                        <td className="tableContent">{this.data.tweets}</td>
+                        <td className="tableContent">{this.data.following}</td>
+                        <td className="tableContent">{this.data.followers}</td>
+                      </tr>
+                    </table>
+
                   </div>
                   :
                   <div>
@@ -61,10 +97,10 @@ App = React.createClass({
             </div>
           </div>
 
-          { this.data.currentUser ? <FollowUsers /> : ""}
+          { this.data.currentUser ? <FollowUsers /> : "" }
 
         </div>
-        <div className="col-md-8 col-sm-8">
+        <div className="col-md-8 col-xs-8">
           <div className="tweetbox-container">
             <div className="panel panel-default tweetbox">
               <div className="panel-body">
@@ -92,6 +128,7 @@ App = React.createClass({
               </div>
             </div>
           </div>
+          { this.data.currentUser ? <TweetFeed /> : ""}
         </div>
       </div>
     );
