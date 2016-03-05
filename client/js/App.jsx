@@ -64,7 +64,7 @@ App = React.createClass({
                   //Message for logged in user
                   <div>
                     <p>Hello <strong>{this.data.currentUser.username}</strong>,
-                      welcome to twitterClone w react</p>
+                      Welcome to Panorama, the 360&deg; social network</p>
                     <button
                       type="button"
                       className="btn btn-info fullbutton"
